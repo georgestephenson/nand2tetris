@@ -8,7 +8,7 @@ Below is my checklist tracking completion of the projects.
 
 ## Hardware Projects
 
-- [ ] Project 1: Boolean Logic
+- [x] Project 1: Boolean Logic
 - [ ] Project 2: Boolean Arithmetic
 - [ ] Project 3: Memory
 - [ ] Project 4: Machine Language
