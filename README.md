@@ -11,7 +11,7 @@ Below is my checklist tracking completion of the projects.
 - [x] Project 1: Boolean Logic
 - [x] Project 2: Boolean Arithmetic
 - [x] Project 3: Memory
-- [ ] Project 4: Machine Language
+- [x] Project 4: Machine Language
 - [ ] Project 5: Computer Architecture
 - [ ] Project 6: Assembler
 
