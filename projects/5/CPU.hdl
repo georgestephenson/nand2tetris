@@ -32,5 +32,68 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-	//// Replace this comment with your code.
+    // most use of instruction, ignore if not C-instruction
+    // instruction[3] 1st dest bit, store comp in RAM[A], writeM
+    // instruction[4] 2nd dest bit, store comp in D
+    // instruction[5] last dest bit, store comp in A
+    // instruction[6..11] ALU instructions
+    // instruction[12]=a, select A if 0, M if 1
+	Mux16(a[0..15]=false, b=instruction, sel=instruction[15], 
+        out[0]=jumpInstr0,
+        out[1]=jumpInstr1,
+        out[2]=jumpInstr2,
+        out[3]=writeM,
+        out[4]=loadD,
+        out[5]=storeCompInA,
+        out[6]=no,
+        out[7]=f,
+        out[8]=ny,
+        out[9]=zy,
+        out[10]=nx,
+        out[11]=zx,
+        out[12]=selAorM);
+
+    // instruction[15] A-instruction if 0, C-instruction if 1
+	Mux16(a=instruction, b=aluOut, sel=storeCompInA, out=inA);
+
+    Not(in=instruction[15], out=isAInstruction);
+    Or(a=storeCompInA, b=isAInstruction, out=loadA);
+
+    ARegister(in=inA, load=loadA, out=outA, out[0..14]=addressM);
+    
+    Mux16(a=outA, b=inM, sel=selAorM, out=aluY);
+
+    DRegister(in=aluOut, load=loadD, out=aluX);
+
+    ALU(x=aluX, 
+        y=aluY, 
+        zx=zx,
+        nx=nx,
+        zy=zy,
+        ny=ny,
+        f=f,
+        no=no,
+        zr=zr, 
+        ng=ng, 
+        out=aluOut, 
+        out=outM);
+
+    // compute jump
+    Not(in=ng, out=notNg);
+    Not(in=zr, out=notZr);
+    Or(a=ng, b=zr, out=notPs);
+    Or(a=jumpInstr0, b=notPs, out=jump0);
+    Or(a=jumpInstr1, b=notZr, out=jump1);
+    Or(a=jumpInstr2, b=notNg, out=jump2);
+    And(a=jump0, b=jump1, out=jump01);
+    And(a=jump01, b=jump2, out=jump);
+
+    // compute PC chip's instruction order of precedence
+    Not(in=jump, out=notJump);
+    Not(in=reset, out=notReset);
+    And(a=jump, b=notReset, out=jumpNotReset);
+    And(a=notJump, b=notReset, out=notJumpNotReset);
+
+    // set PC chip instructions
+    PC(in=outA, inc=notJumpNotReset, load=jumpNotReset, reset=reset, out[0..14]=pc);
 }
