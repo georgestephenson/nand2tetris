@@ -13,7 +13,7 @@ Below is my checklist tracking completion of the projects.
 - [x] Project 3: Memory
 - [x] Project 4: Machine Language
 - [x] Project 5: Computer Architecture
-- [ ] Project 6: Assembler
+- [x] Project 6: Assembler
 
 ## Software Projects
 
